@@ -114,3 +114,4 @@ std::ostream &operator<<(std::ostream &os, Server &server) {
 	<< BOLD BLUE "server maxsize: " << RESET << server.getMaxSize() << std::endl;
 	return os;
 };
+
