@@ -1,0 +1,65 @@
+Managing and processing all incoming and outgoing
+HTTP requests and responses for the web server.
+
+1. Listening for Incoming connections
+The ServerManger set a listening socket to
+accept incoming client connections on a specified port
+(e.g., port 80 for HTTP or port 443 for HTTPS).
+
+It uses system calls like socket(), bind(), and listen ()
+to prepare the server to receive connections.
+
+2. Accepting Client connections
+When a client (e.g., a web browser) send a requests
+to the server, the ServerManger accepts the connection using
+the accept() system call.
+
+Each connection represent a client trying to communicate
+with the server.
+
+3. Parsing HTTP Requests
+The ServeManger reads the data sent by the client (e.g., 
+an HTTP GET or POST request).
+
+It parses the HTTP request to extract important information,
+such as:
+-The HTTP method (e.g., GET, POST, PUT, DELETE).
+-The requested URL or resource.
+- Headers(e.g. Content-Type, User-Agent).
+- The body of the request (if present).
+
+4. Generating HTTP responses
+After processing the requesst, the ServerManger generates an
+appropriate HTTP reponse.
+
+This involves:
+-Determing the status code (e.g. 200 OK, 404 NOT Found, 
+500 Internal Server Error)
+-Sending the requested resource (e.g. an HTML file, JSON data or 
+an image).
+-Including necessary headers (e.g., Conetent-Type, Content-Length)
+
+5. Managing Multiple connections
+-A web server often need to handle multiple clients simulatneously.
+-The serverMange might use techniques like:
+    -. Multithreading: Creating a new thread for each connection.
+
+    -Multiplexing: Using select(), poll() or epoll() to manage
+    multiple connections in a single thread.
+
+    -Astnchrinous I/O:
+    Handling connections without blocking the main thread.
+
+6. Closing connections
+    Once the server has sent the reposne, it cloes the connectio with 
+    the client or keeps it open if the client requests persistnet connections 
+    (using the connection: keep-alive header).
+
+7. Handling Errors
+Sever Mange also handles errors, such as:
+    - Invalid HTTP requests.
+    -Missing resources (e.g. 404 Not Found).
+    -Server-side issues (e.g. 500 Internal Server Error).
+
+
+
