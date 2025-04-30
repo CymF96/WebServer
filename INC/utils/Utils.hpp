@@ -1,34 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Errors.hpp                                         :+:      :+:    :+:   */
+/*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cofische <cofische@student.42london.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/24 15:27:30 by cofische          #+#    #+#             */
-/*   Updated: 2025/04/24 16:28:08 by cofische         ###   ########.fr       */
+/*   Created: 2025/04/28 15:11:28 by cofische          #+#    #+#             */
+/*   Updated: 2025/04/28 15:23:14 by cofische         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERRORS_HPP
-#define ERRORS_HPP
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
-#include "Webserv.hpp"
+#include "Server.hpp"
 
-class Errors {
-	public:
-		Errors(int inputErrCode, const std::string &inputDir);
-		~Errors();
+class Server;
+class Location;
 
-		std::string &getDirectory();
-		int getErrorCode();
-		
-	private:
-		std::string directory;
-		int error_code;
-		
-};
-
-std::ostream &operator<<(std::ostream &os, Errors &error_page);
+int convertInt(const std::string &str);
+void printServer(Server &server);
+void printLocation(Location &location);
 
 #endif
