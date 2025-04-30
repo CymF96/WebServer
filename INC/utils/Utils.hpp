@@ -1,35 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Webserv.hpp                                        :+:      :+:    :+:   */
+/*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cofische <cofische@student.42london.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 10:19:29 by cofische          #+#    #+#             */
-/*   Updated: 2025/04/30 14:54:48 by cofische         ###   ########.fr       */
+/*   Created: 2025/04/28 15:11:28 by cofische          #+#    #+#             */
+/*   Updated: 2025/04/28 15:23:14 by cofische         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef WEBSER_HPP
-#define WEBSER_HPP
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
-#include <iostream>
-#include <sstream>
-#include <cstring>
-#include <string>
-#include <vector>
-#include <fstream>
-#include <iterator>
-#include <algorithm>
-#include <map>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <errno.h>
+#include "Server.hpp"
 
-#include "Colors.hpp"
-#include "Utils.hpp"
+class Server;
+class Location;
+
+int convertInt(const std::string &str);
+void printServer(Server &server);
+void printLocation(Location &location);
 
 #endif

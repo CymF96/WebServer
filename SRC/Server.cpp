@@ -3,115 +3,133 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cofische <cofische@student.42london.com    +#+  +:+       +#+        */
+/*   By: chuleung <chuleung@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/07 15:32:27 by cofische          #+#    #+#             */
-/*   Updated: 2025/04/24 12:38:53 by cofische         ###   ########.fr       */
+/*   Updated: 2025/04/30 16:46:25 by chuleung         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../INC/utils/Server.hpp"
 
-/*CONSTRUCTORS/DESTRUCTORS*/
-Server::Server(int inputID): Socket(), ID(inputID) {
-	std::cout << BOLD YELLOW "Server is starting\nHELLO!\n" RESET;
+/************************/
+/*CONSTRUCTOR/DESTRUCTOR*/
+/************************/
+
+Server::Server(int inputID): ID(inputID), keep_alive(false) {
+	// std::cout << BOLD YELLOW "Server is starting\nHELLO!\n" RESET;
 	
-	addlen = sizeof(this->getAddr());
-	std::cout << ID << std::endl;
+	//As error page must be default if none are given in config file --> add a default error-page setup when creating server and erase if error are id
+
+	
+	// addlen = sizeof(this->getAddr());
 	// std::cout << "Socketfd in the server class:" << &this->getSocketfd() << ", Socket add:" << this->getAddr() << "\n";
 	
 	// launch();
 	// closeServer();
-}
-
+};
 Server::~Server() {
-	std::cout << BOLD RED "Server is closing\nGOODBYE!\n" RESET;
-}
+	// std::cout << BOLD RED "Server is closing\nGOODBYE!\n" RESET;
+};
 
-/*SETTER FUNCTIONS*/
+/********/
+/*SETTER*/
+/********/
 
 void Server::setHost(const std::string &inputHost) {
 	host = inputHost;
 };
+void Server::setPort(const std::string &inputPort) {
+	std::stringstream ss(inputPort);
+	std::string token;
 
-void Server::setPort(int inputPort) {
-	port = inputPort;
+	while (std::getline(ss, token, ' ')) {
+    	port.push_back(token);
+	}
 };
-
 void Server::setErrorDir(const std::string &inputErrorDir) {
-	errorDir = inputErrorDir;
+	std::stringstream ss(inputErrorDir);
+	std::string directory;
+	int code;
+	char space;
+	if (inputErrorDir.find("default") != std::string::npos) {
+		code = 0;
+		std::string garbage;
+		ss >> garbage >> space >> directory;
+	} else
+		ss >> code >> space >> directory;
+	errors_list.insert(std::pair<int, std::string>(code, directory));	
 };
-
 void Server::addServerName(const std::string &inputName) {
-	serverNames.push_back(inputName);
-};
+	std::stringstream ss(inputName);
+	std::string token;
 
+	while (std::getline(ss, token, ' ')) {
+    	serverNames.push_back(token);
+	}
+};
 void Server::setMaxSize(int inputMaxSize) {
 	maxSize = inputMaxSize;
 };
+void Server::addLocation(const std::string &inputLocation) {
+	locations.push_back(new Location(inputLocation));
+};
+void Server::setKeepAlive(bool inputAlive) {
+	keep_alive = inputAlive;	
+};
 
-/*GETTER FUNCTIONS*/
+/********/
+/*GETTER*/
+/********/
 
-std::string Server::getHost() {
+std::string &Server::getHost() {
 	return host;
 };
-
-int Server::getPort() {
+std::vector<std::string> &Server::getPort() {
 	return port;
 };
-
-std::string Server::getErrorDir() {
-	return errorDir;
+std::map<int,std::string> &Server::getErrorDir() {
+	return errors_list;
 };
-
-std::string Server::getServerName() {
-	return serverNames.front();
+std::vector<std::string> &Server::getServerName() {
+	return serverNames;
 };
-
 int Server::getMaxSize() {
 	return maxSize;
 };
-
-
-/*METHOD*/
-void Server::launch() {
-	// while(true) {
-		std::cout << "+++++++++ WAITING FOR CONNECTTION ++++++++++++++++++" << std::endl;
-		if ((new_socket = accept(this->getSocketfd(), reinterpret_cast<sockaddr*>(this->getAddr()), &addlen)) < 0)
-		{
-			std::cout << "Error on accepting connection\n";
-			return ;			
-		}
-		char buffer[30000] = {0};
-		long valread = read(new_socket, buffer, 30000);
-		std::cout << valread << std::endl << buffer << std::endl;
-		close(new_socket);
-	// }
-}
-
-int Server::closeServer() {
-	close(this->getSocketfd());
-	return 0;
-}
-
-int Server::getNewSocket() const {
-	return new_socket;
-}
-
-void printServer(Server &server) {
-	std::cout << BOLD BLUE << "server name: " << RESET << server.getServerName() << std::endl
-	<< BOLD BLUE "server port: " << RESET << server.getPort() << std::endl
-	<< BOLD BLUE "server host: " << RESET << server.getHost() << std::endl
-	<< BOLD BLUE "server error dir: " << RESET << server.getErrorDir() << std::endl
-	<< BOLD BLUE "server maxsize: " << RESET << server.getMaxSize() << std::endl;
-}
-
-std::ostream &operator<<(std::ostream &os, Server &server) {
-	os << BOLD BLUE << "server name: " << RESET << server.getServerName() << std::endl
-	<< BOLD BLUE "server port: " << RESET << server.getPort() << std::endl
-	<< BOLD BLUE "server host: " << RESET << server.getHost() << std::endl
-	<< BOLD BLUE "server error dir: " << RESET << server.getErrorDir() << std::endl
-	<< BOLD BLUE "server maxsize: " << RESET << server.getMaxSize() << std::endl;
-	return os;
+std::vector<Location*> &Server::getLocation() {
+	return locations;
 };
+bool Server::getKeepAlive() {
+	return keep_alive;	
+};
+
+
+/********/
+/*METHOD*/
+/********/
+
+// void Server::launch() {
+// 	// while(true) {
+// 		// std::cout << "+++++++++ WAITING FOR CONNECTTION ++++++++++++++++++" << std::endl;
+// 		// if ((new_socket = accept(this->getSocketfd(), reinterpret_cast<sockaddr*>(this->getAddr()), &addlen)) < 0)
+// 		// {
+// 		// 	std::cout << "Error on accepting connection\n";
+// 		// 	return ;			
+// 		// }
+// 		// char buffer[30000] = {0};
+// 		// long valread = read(new_socket, buffer, 30000);
+// 		// std::cout << valread << std::endl << buffer << std::endl;
+// 		// close(new_socket);
+// 	// }
+// }
+
+// int Server::closeServer() {
+// 	close(this->getSocketfd());
+// 	return 0;
+// }
+
+// int Server::getNewSocket() const {
+// 	return new_socket;
+// }
 

@@ -6,7 +6,7 @@
 /*   By: cofische <cofische@student.42london.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 11:26:11 by cofische          #+#    #+#             */
-/*   Updated: 2025/04/24 13:26:37 by cofische         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:33:59 by cofische         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "Webserv.hpp"
 #include "Server.hpp"
+#include "Socket.hpp"
 
 // typedef typename std::vector<Server*>::iterator Iterator;
 
@@ -24,11 +25,19 @@ class ServerManager {
 		~ServerManager();
 		
 		int	readFile(std::fstream &configFile);
-		void parseLine(std::string &line, Server *currentServer);
+		void parseServer(std::string &line, Server *currentServer, std::fstream &configFile);
+		void parseLocation(std::string &line, Server *currentServer, std::fstream &configFile);
+		void setHostPort();
+		void startSockets();
+
+		std::vector<Server*> &getServers();
+		std::map<int, std::string> &getHostPort();
+		std::vector<Socket*> &getSocket();
 		
 	private:
 		std::vector<Server*> servers;
-		std::vector<std::map<std::string, int>> 
+		std::map<std::string, std::string> host_port; // MAY NOT BE USEFUL AS WE GOT SERVER ID 
+		std::vector<Socket*> sockets;
 		// adding a vector that will keep track of the socket fd of each server ? 
 		// Servermanager will be in charge of the epoll management
 		
