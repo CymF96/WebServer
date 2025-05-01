@@ -103,3 +103,8 @@ int main() {
     freeaddrinfo(res); // Free the linked list
     return 0;
 }
+
+int status = getaddrinfo("example.com", "http", NULL, &res);
+if (status != 0) {
+    printf("getaddrinfo error: %s\n", gai_strerror(status));
+}

@@ -1,3 +1,11 @@
+int getaddrinfo(const char *node,     // e.g. "www.example.com" or IP
+    const char *service,  // e.g. "http" or port number
+    const struct addrinfo *hints,
+    struct addrinfo **res);
+
+
+
+
 struct addrinfo {
     int ai_flags; // AI_PASSIVE, AI_CANONNAME, etc.
     int ai_family; // AF_INET, AF_INET6, AF_UNSPEC
@@ -8,6 +16,22 @@ struct addrinfo {
     char *ai_canonname; // full canonical hostname
     struct addrinfo *ai_next; // linked list, next node
     };
+
+
+struct sockaddr {
+    unsigned short    sa_family;    // address family, AF_xxx
+    char              sa_data[14];  // 14 bytes of protocol address
+}; 
+
+
+struct sockaddr_storage {
+    sa_family_t ss_family; // address family
+    // all this is padding, implementation specific, ignore it:
+    char __ss_pad1[_SS_PAD1SIZE];
+    int64_t __ss_align;
+    char __ss_pad2[_SS_PAD2SIZE];
+    };
+
 
 
 struct sockaddr_in {
