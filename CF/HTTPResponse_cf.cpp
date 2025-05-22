@@ -1,16 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HTTPResponse.cpp                                   :+:      :+:    :+:   */
+/*   HTTPResponse_cf.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cofische <cofische@student.42.fr>          +#+  +:+       +#+        */
+/*   By: chuleung <chuleung@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/05 12:19:25 by chuleung          #+#    #+#             */
-/*   Updated: 2025/05/21 15:04:24 by cofische         ###   ########.fr       */
+/*   Updated: 2025/05/22 16:06:16 by chuleung         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../INC/utils/HTTPResponse.hpp"
+#include <dirent.h>
+
 
 bool cgi_flag = false;
 
@@ -71,22 +73,72 @@ void HTTPResponse::setGetResponse() {
 
 }
 
-void HTTPResponse::setPostResponse() {
-	// Switch or if statement to see if it is an upload request (CD --> filename)
-		// IF fielname exist --> create a file with a filenema define in CD and fill it with the file content of cd and save it under upload
-	// 	int status_code = CreateTheUploadFIle()
-	// 	if (status_code == 200) { 
-	// 	prepareStatusLine(status_code);
-	// 	prepareHeader();
-	// 	// if (cgi_flag) -- Check with Shally if we need that
-	// 	// 	CGI_Body();
-	// 	headerResponse();
-	// 	bodyResponse(); // html page that going to show "File successfully uploaded + redirect them to the server homepage"
-	// } else {
-	// 	setErrorResponse(status_code);
-	// }
-	;
+// std::string getStatusStr(int status_code) {
+// 	//Harcode of the table for status code and status string
+// 	std::map<int, std::string> statusMessages;
+// 	statusMessages.insert(std::make_pair(200, "OK"));
+// 	statusMessages.insert(std::make_pair(204, "No Content"));
+// 	statusMessages.insert(std::make_pair(400, "Bad Request"));
+// 	statusMessages.insert(std::make_pair(401, "Unauthorized"));
+// 	statusMessages.insert(std::make_pair(404, "Not Found"));
+// 	statusMessages.insert(std::make_pair(405, "Method Not Allowed"));
+// 	statusMessages.insert(std::make_pair(415, "Unsupported Media Type"));
+// 	statusMessages.insert(std::make_pair(500, "Internal Server Error"));
+// 	statusMessages.insert(std::make_pair(502, "Bad Gateway"));
+	
+
+
+int HTTPResponse::checkDirectory(std::string& location){
+	DIR* dir = opendir(location.c_str());
+	if (dir == NULL)
+	{
+		std::cout << "Error: " << strerror(errno) << std::endl;
+		return 404;
+	}
+	return 200;
 }
+
+
+
+int HTTPResponse::createUploadFile(std::string& location, ContentDisposition_& cd){
+	int status_code = checkDirectory(location);
+	std::string filepath = location + "/" + cd.filename_;
+	
+
+	
+	
+
+
+	
+}
+
+
+void HTTPResponse::setPostResponse(std::string& location, ContentDisposition_& cd) {
+	// Switch or if statement to see if it is an upload request (CD --> filename)
+		// IF fielname exist --> create a file with a filenema define in CD and fill it with the file content of cd and save it under upload		
+		if (!(cd.file_content_).empty())
+			createUploadFile(location, cd);
+
+		
+		
+		int status_code = createUploadFIle(location, cd)
+		if (status_code == 200) { 
+		prepareStatusLine(status_code);
+		prepareHeader();
+		// if (cgi_flag) -- Check with Shally if we need that
+		// 	CGI_Body();
+		headerResponse();
+		bodyResponse(); // html page that going to show "File successfully uploaded + redirect them to the server homepage"
+	} else {
+		setErrorResponse(status_code);
+	}
+}
+
+
+
+
+
+
 
 void HTTPResponse::setDeleteResponse() {
 	body_filename = "documents" + currentRequest.getPath();
